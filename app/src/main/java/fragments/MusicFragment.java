@@ -7,8 +7,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.chen.media.R;
+
+import java.util.ArrayList;
+
+import DataHelper.MusicProvider;
+import adapter.MusicAdapter;
+import bean.Music;
 
 
 /**
@@ -29,6 +38,12 @@ public class MusicFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+
+    private ListView listView = null;
+    private MusicProvider musicProvider = null;
+    private View rootView = null;
+    private ArrayList<Music> musics = null;
+    private MusicAdapter musicAdapter = null;
     private OnFragmentInteractionListener mListener;
 
     /**
@@ -65,8 +80,31 @@ public class MusicFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the list_item for this fragment
-        return inflater.inflate(R.layout.fragment_music, container, false);
+        // Inflate the video_list_item for this fragment
+        if (rootView == null) {
+            rootView = inflater.inflate(R.layout.fragment_music, container, false);
+            initView();
+        }
+        ViewGroup parent = (ViewGroup) rootView.getParent();
+        if (parent != null)
+            parent.removeView(rootView);
+        return rootView;
+    }
+
+    private void initView() {
+        musicProvider = new MusicProvider(getActivity());
+        listView = (ListView) rootView.findViewById(R.id.musics);
+        musics = (ArrayList<Music>) musicProvider.getList();
+        musicAdapter = new MusicAdapter(getActivity(), musics);
+        listView.setAdapter(musicAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getActivity(),musics.get(position).getPath(),Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event
