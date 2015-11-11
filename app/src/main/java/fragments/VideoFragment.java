@@ -105,14 +105,16 @@ public class VideoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the list_item for this fragment
-        if(rootView == null)
-        rootView = inflater.inflate(R.layout.fragment_video, container, false);
+        // Inflate the video_list_item for this fragment
+        if(rootView == null){
+            rootView = inflater.inflate(R.layout.fragment_video, container, false);
+            initView();
+        }
 
         ViewGroup parent = (ViewGroup) rootView.getParent();
-        if(parent != null)
+        if(parent != null) {
             parent.removeView(rootView);
-        initView();
+        }
         return rootView;
     }
 

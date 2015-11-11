@@ -47,7 +47,7 @@ public class VideoApapter extends BaseAdapter {
         ViewHolder holder = null;
         if(convertView == null){
            convertView = LayoutInflater.from(context).inflate(
-                   R.layout.list_item,null
+                   R.layout.video_list_item,null
            );
            holder = new ViewHolder();
            TextView title = (TextView) convertView.findViewById(R.id.title);
