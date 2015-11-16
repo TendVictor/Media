@@ -35,6 +35,12 @@
             android:label="@string/title_activity_video"
             android:theme="@style/AppTheme">
         </activity>
+        <activity android:name="android.rxy.videoplayer.MusicActivity"/>
+        <service android:name="services.MusicService">
+            <intent-filter>
+                <action android:name="music_service"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

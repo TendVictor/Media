@@ -72,6 +72,7 @@ public class VideoFragment extends Fragment {
 
     }
 
+
     private void initView() {
         videoProvider = new VideoProvider(getActivity());
         listView = (ListView) rootView.findViewById(R.id.videos);
@@ -82,6 +83,9 @@ public class VideoFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent();
+                intent.setAction("music_service");
+                getActivity().stopService(intent);
                 Toast.makeText(getActivity(),videos.get(position).getPath(),
                         Toast.LENGTH_LONG).show();
                 Intent i = new Intent(getActivity(), VideoActivity.class);

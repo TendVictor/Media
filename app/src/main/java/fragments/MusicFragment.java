@@ -2,8 +2,10 @@ package fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.rxy.videoplayer.MusicActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +104,11 @@ public class MusicFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(getActivity(),musics.get(position).getPath(),Toast.LENGTH_SHORT).show();
-
+//
+                Intent intent = new Intent(getActivity(), MusicActivity.class);
+                intent.putExtra("position",position);
+                getActivity().startActivity(intent);
+System.out.println("***************************" + position);
             }
         });
     }
