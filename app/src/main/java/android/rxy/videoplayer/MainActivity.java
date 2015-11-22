@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.example.chen.media.R;
 
 import fragments.MusicFragment;
-import fragments.OnlineVideoFragment;
 import fragments.VideoFragment;
 import io.vov.vitamio.LibsChecker;
 
@@ -30,7 +29,6 @@ public class MainActivity extends AppCompatActivity
 
     private TextView musicTv = null;
     private TextView videoTv = null;
-    private TextView onlineVideo = null;
     private TextView mTv_c = null;
 
     @Override
@@ -56,12 +54,15 @@ public class MainActivity extends AppCompatActivity
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
 
-        onlineVideo = (TextView) findViewById(R.id.onlineVideo);
         musicTv = (TextView) findViewById(R.id.music);
         videoTv = (TextView) findViewById(R.id.video);
         musicTv.setOnClickListener(this);
         videoTv.setOnClickListener(this);
-        onlineVideo.setOnClickListener(this);
+        if (videofragment == null)
+            videofragment = new VideoFragment();
+        getFragmentManager().beginTransaction().replace(
+                R.id.content, videofragment
+        ).commit();
     }
 
     @Override
@@ -93,7 +94,6 @@ public class MainActivity extends AppCompatActivity
 
     private static VideoFragment videofragment = null;
     private static MusicFragment musicFragment = null;
-    private static OnlineVideoFragment Onlinefragment = null;
 
     @Override
     public void onClick(View v) {
@@ -113,12 +113,6 @@ public class MainActivity extends AppCompatActivity
                 getFragmentManager().beginTransaction().replace(
                         R.id.content, videofragment
                 ).commit();
-                break;
-            case R.id.onlineVideo:
-                Toast.makeText(this, "onlineVideo", Toast.LENGTH_SHORT).show();
-                if (Onlinefragment == null)
-                    Onlinefragment = new OnlineVideoFragment();
-                getFragmentManager().beginTransaction().replace(R.id.content, Onlinefragment).commit();
                 break;
             default:
                 break;

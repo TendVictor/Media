@@ -8,17 +8,26 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.os.StatFs;
 import android.provider.MediaStore;
 import android.rxy.videoplayer.VideoActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chen.media.R;
 
+import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import DataHelper.LoadedImage;
@@ -48,6 +57,10 @@ public class VideoFragment extends Fragment {
     private ArrayList<Video> videos = null;
     private VideoProvider videoProvider = null;
     private OnFragmentInteractionListener mListener;
+    private SwipeRefreshLayout refreshLayout = null;
+
+    private TextView memoryTv = null;
+    private ProgressBar progressBar = null;
 
     /**
      * Use this factory method to create a new instance of
@@ -77,8 +90,19 @@ public class VideoFragment extends Fragment {
         videoProvider = new VideoProvider(getActivity());
         listView = (ListView) rootView.findViewById(R.id.videos);
         videos = (ArrayList<Video>) videoProvider.getList();
-        videoApapter = new VideoApapter(getActivity(),videos);
+        videoApapter = new VideoApapter(getActivity(), videos);
         listView.setAdapter(videoApapter);
+
+        getSDCardMemory();
+        memoryTv = (TextView) rootView.findViewById(R.id.memory);
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+
+        double a1 = result[0] * 1.0 / (1024 * 1024 * 1024);
+        double a2 = result[1] * 1.0 / (1024 * 1024 * 1024);
+        memoryTv.setText("Memory: " + "共有" + numberFormat.format(a1) + "GB" +
+                "可用：" + numberFormat.format(a2) + "GB");
+        progressBar.setProgress(100 - (int) ((a2 / a1) * 100));
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -86,14 +110,44 @@ public class VideoFragment extends Fragment {
                 Intent intent = new Intent();
                 intent.setAction("music_service");
                 getActivity().stopService(intent);
-                Toast.makeText(getActivity(),videos.get(position).getPath(),
+                Toast.makeText(getActivity(), videos.get(position).getPath(),
                         Toast.LENGTH_LONG).show();
                 Intent i = new Intent(getActivity(), VideoActivity.class);
                 i.putExtra("path", videos.get(position).getPath());
                 getActivity().startActivity(i);
             }
         });
+        refreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_video);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                videos = null;
+                videos = (ArrayList<Video>) videoProvider.getList();
+                videoApapter = null;
+                videoApapter = new VideoApapter(getActivity(),videos);
+                listView.setAdapter(videoApapter);
+                LoadImages();
+            }
+        });
         LoadImages();
+    }
+
+    private static long[] result = new long[2];
+    private DecimalFormat numberFormat = new DecimalFormat("##.00");
+
+    private void getSDCardMemory() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            File sdCardDir = Environment.getExternalStorageDirectory();
+            StatFs statFs = new StatFs(sdCardDir.getPath());
+
+            long bSize = statFs.getBlockSize();
+            long bCount = statFs.getBlockCount();
+            long availBlocks = statFs.getAvailableBlocks();
+
+            result[0] = bSize * bCount;
+            result[1] = bSize * availBlocks;
+        }
     }
 
     @Override
@@ -110,13 +164,13 @@ public class VideoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the video_list_item for this fragment
-        if(rootView == null){
+        if (rootView == null) {
             rootView = inflater.inflate(R.layout.fragment_video, container, false);
             initView();
         }
 
         ViewGroup parent = (ViewGroup) rootView.getParent();
-        if(parent != null) {
+        if (parent != null) {
             parent.removeView(rootView);
         }
         return rootView;
@@ -160,31 +214,45 @@ public class VideoFragment extends Fragment {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
-    private void LoadImages(){
-       new LoadImageFromSDCard().execute();
+
+    private void LoadImages() {
+        new LoadImageFromSDCard().execute();
     }
-    private void  addImages(){
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            refreshLayout.setRefreshing(false);
+        }
+    };
+
+    private void addImages() {
         videoApapter.notifyDataSetChanged();
     }
-    private Bitmap getVideoThumbnail(String path,int height,int width,int kind){
+
+    private Bitmap getVideoThumbnail(String path, int height, int width, int kind) {
         Bitmap bitmap = null;
-        bitmap = ThumbnailUtils.createVideoThumbnail(path,kind);
+        bitmap = ThumbnailUtils.createVideoThumbnail(path, kind);
         bitmap = ThumbnailUtils.extractThumbnail(
-                bitmap,width,height,ThumbnailUtils.OPTIONS_RECYCLE_INPUT
+                bitmap, width, height, ThumbnailUtils.OPTIONS_RECYCLE_INPUT
         );
         return bitmap;
     }
-    class LoadImageFromSDCard extends AsyncTask<Object, LoadedImage,Object>{
+
+    class LoadImageFromSDCard extends AsyncTask<Object, LoadedImage, Object> {
 
         @Override
         protected Object doInBackground(Object... params) {
             Bitmap bitmap = null;
-            for (int i=0;i<videos.size();i++){
+            for (int i = 0; i < videos.size(); i++) {
                 bitmap = getVideoThumbnail(videos.get(i).getPath(),
-                        120,120, MediaStore.Images.Thumbnails.MINI_KIND);
-                if(bitmap != null){
+                        180, 360, MediaStore.Images.Thumbnails.MINI_KIND);
+                if (bitmap != null) {
                     videos.get(i).setLoadedImage(new LoadedImage(bitmap));
                     publishProgress(new LoadedImage(bitmap));
+                    if (i == videos.size() - 1) {
+                        mHandler.sendEmptyMessage(0x123);
+                    }
                 }
             }
             return null;
@@ -192,7 +260,7 @@ public class VideoFragment extends Fragment {
 
         @Override
         protected void onProgressUpdate(LoadedImage... values) {
-           addImages();
+            addImages();
         }
 
     }

@@ -2,14 +2,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="fragments.VideoFragment">
-    <android.support.v4.widget.SwipeRefreshLayout
+    tools:context="fragments.VideoFragment"
+    android:orientation="vertical"
+    android:layout_margin="10dp">
+    <TextView
+        android:id="@+id/memory"
+        android:text="Memory:"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        />
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:max="100"
+        android:progress="50"
+        />
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        >
+
         <ListView
             android:id="@+id/videos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:dividerHeight="4dp"
+            android:divider="#89969b"
             >
         </ListView>
     </android.support.v4.widget.SwipeRefreshLayout>

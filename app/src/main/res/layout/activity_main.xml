@@ -49,13 +49,6 @@
                 android:gravity="center"
                 android:textSize="30dp"
                 android:layout_margin="20dp"/>
-            <TextView
-                android:id="@+id/onlineVideo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="在线视频"
-                android:gravity="center"
-                android:textSize="30dp"/>
         </LinearLayout>
     </android.support.v4.widget.DrawerLayout>
 </LinearLayout>

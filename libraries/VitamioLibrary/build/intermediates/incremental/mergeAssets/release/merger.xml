@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/Users/chen/AndroidStudioProjects/Media/libraries/VitamioLibrary/assets"/></dataSet><dataSet config="release"><source path="/Users/chen/AndroidStudioProjects/Media/libraries/VitamioLibrary/build-types/release/assets"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="E:\Learning\as---workspace\Media\libraries\VitamioLibrary\assets"/></dataSet><dataSet config="release"><source path="E:\Learning\as---workspace\Media\libraries\VitamioLibrary\build-types\release\assets"/></dataSet></merger>
