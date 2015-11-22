@@ -32,7 +32,7 @@ public class MusicActivity extends Activity implements View.OnClickListener{
     private int flag;//播放标志
 
     private Button shuffleBtn,repeatBtn;
-    private Button playBtn, stopBtn, previousBtn, nextBtn;
+    private Button playBtn,previousBtn, nextBtn;
     private SeekBar musicProgress;
 
     private ArrayList<Music> musics;
@@ -68,12 +68,12 @@ public class MusicActivity extends Activity implements View.OnClickListener{
         Intent intent1 = getIntent();
         position = intent1.getIntExtra("position",-1);
 System.out.println("position is :" + position);
-
         initView();
         initService();
 
         path = musics.get(position).getPath();
         duration = musics.get(position).getDuaration();
+
 
 
         setAllUi();
@@ -160,7 +160,6 @@ System.out.println("Service Start!!");
     private void initView() {
         musicProgress = (SeekBar) findViewById(R.id.sb_musicbar);
         playBtn = (Button) findViewById(R.id.bt_musicplay);
-        stopBtn = (Button) findViewById(R.id.bt_musicstop);
         previousBtn = (Button) findViewById(R.id.bt_musicprevious);
         nextBtn = (Button) findViewById(R.id.bt_musicnext);
         shuffleBtn = (Button) findViewById(R.id.btn_shuffle);
@@ -170,7 +169,6 @@ System.out.println("Service Start!!");
         musics = (ArrayList<Music>) musicProvider.getList();
 
         playBtn.setOnClickListener(this);
-        stopBtn.setOnClickListener(this);
         previousBtn.setOnClickListener(this);
         nextBtn.setOnClickListener(this);
         shuffleBtn.setOnClickListener(this);
@@ -201,12 +199,14 @@ System.out.println("Service Start!!");
                     startService(intent);
                     isPlaying = false;
                     isPause = true;
+                    playBtn.setBackgroundResource(R.drawable.bg_btn_play);
                 }else if(isPause){
                     intent.setAction("music_service");
                     intent.putExtra("MSG", Constant.CONTINUE_MSG);
                     startService(intent);
                     isPause = false;
                     isPlaying = true;
+                    playBtn.setBackgroundResource(R.drawable.bg_btn_pause);
                 }
                 break;
             case R.id.bt_musicprevious:
@@ -214,8 +214,6 @@ System.out.println("Service Start!!");
                 break;
             case R.id.bt_musicnext:
                 nextMusic();
-                break;
-            case R.id.bt_musicstop:
                 break;
             case R.id.btn_repeat:
                 System.out.println("btn_repeat " + repeatState);
@@ -227,7 +225,7 @@ System.out.println("Service Start!!");
                 System.out.println("btn_shuffle");
                 Intent shuffleIntent = new Intent(SHUFFLE_ACTION);
                 if(isOrdered){
-                    shuffleBtn.setText("随机播放");
+                    shuffleBtn.setBackgroundResource(R.drawable.bg_btn_shuffle);
                     System.out.println("IsOrdered Changed to Shuffled");
                     isOrdered = false;
                     isShuffled = true;
@@ -236,7 +234,7 @@ System.out.println("Service Start!!");
                     sendBroadcast(shuffleIntent);
                 }
                 else if(isShuffled){
-                    shuffleBtn.setText("顺序播放");
+                    shuffleBtn.setBackgroundResource(R.drawable.bg_btn_shufflenone);
                     System.out.println("IsShuffledChanged to Ordered");
                     isShuffled = false;
                     isOrdered = true;
@@ -267,18 +265,17 @@ System.out.println("Service Start!!");
     private void SendRepeatModeToService(int state, Intent repeatIntent){
         switch (state){
             case isSingalRepeat:
-                repeatBtn.setText("单曲循环");
+                repeatBtn.setBackgroundResource(R.drawable.bg_btn_repeatcurrent);
                 repeatIntent.putExtra("repeatState",isSingalRepeat);
                 sendBroadcast(repeatIntent);
                 break;
             case isCircleRepeat:
-                repeatBtn.setText("顺序循环");
+                repeatBtn.setBackgroundResource(R.drawable.bg_btn_repeatall);
                 repeatIntent.putExtra("repeatState",isCircleRepeat);
                 sendBroadcast(repeatIntent);
                 break;
             case isNoneCircleRepeat:
-                System.out.println("NoneCircleRepeat");
-                repeatBtn.setText("不循环");
+                repeatBtn.setBackgroundResource(R.drawable.bg_btn_repeatnone);
                 repeatIntent.putExtra("repeatState",isNoneCircleRepeat);
                 sendBroadcast(repeatIntent);
                 break;

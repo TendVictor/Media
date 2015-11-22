@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_playback"
+    android:gravity="bottom">
+
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         android:orientation="horizontal">
-        <Button
-            android:layout_width="120dp"
-            android:layout_height="match_parent"
-            android:id="@+id/btn_shuffle"
-            android:text="播放"/>
-        <Button
-            android:layout_width="120dp"
-            android:layout_height="match_parent"
-            android:id="@+id/btn_repeat"
-            android:text="顺序循环"/>
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/sb_musicbar"
+        android:indeterminate="false"
+        android:background="@drawable/voice_seekbar_bg"
+        android:progressDrawable="@drawable/bg_seekbar_progress"
+        android:thumb="@drawable/bg_seekbarthumb"/>
+
         <TextView
             android:id="@+id/tv_duration"
             android:layout_width="40dp"
@@ -24,11 +27,6 @@
             android:text="lalal"/>
     </LinearLayout>
 
-    <SeekBar
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:id="@+id/sb_musicbar"
-        android:indeterminate="false" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,29 +34,38 @@
         android:orientation="horizontal">
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="match_parent"
             android:id="@+id/bt_musicprevious"
-            android:text="上一首"/>
+            android:background="@drawable/bg_btn_previous"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/btn_shuffle"
+            android:background="@drawable/bg_btn_shufflenone"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="match_parent"
             android:id="@+id/bt_musicplay"
-            android:text="播放"/>
+            android:background="@drawable/bg_btn_play"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="match_parent"
-            android:id="@+id/bt_musicstop"
-            android:text="暂停"/>
+            android:id="@+id/btn_repeat"
+            android:background="@drawable/bg_btn_repeatall"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="match_parent"
             android:id="@+id/bt_musicnext"
-            android:text="下一首"/>
-
+            android:background="@drawable/bg_btn_next"/>
     </LinearLayout>
 
 </LinearLayout>
