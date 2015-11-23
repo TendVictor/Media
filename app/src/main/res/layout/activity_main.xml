@@ -20,7 +20,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="@android:color/darker_gray">
+            android:background="@android:color/darker_gray"
+            android:clickable="true">
         </LinearLayout>
 
         <LinearLayout
@@ -31,7 +32,8 @@
             android:orientation="vertical"
             android:padding="8dp"
             android:background="#dfcaa7"
-            android:gravity="center">
+            android:gravity="center"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/video"
