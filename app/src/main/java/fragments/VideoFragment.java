@@ -121,11 +121,16 @@ public class VideoFragment extends Fragment {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                videos = null;
-                videos = (ArrayList<Video>) videoProvider.getList();
-                videoApapter = null;
-                videoApapter = new VideoApapter(getActivity(),videos);
-                listView.setAdapter(videoApapter);
+                videos.clear();
+                ArrayList<Video> tmp = (ArrayList<Video>) videoProvider.getList();
+                for(int i =0;i<tmp.size();i++){
+                    videos.add(tmp.get(i));
+                }
+                videoApapter.notifyDataSetChanged();
+System.out.println(videos.toString());
+//                videoApapter = null;
+//                videoApapter = new VideoApapter(getActivity(),videos);
+//                listView.setAdapter(videoApapter);
                 LoadImages();
             }
         });

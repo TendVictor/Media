@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity
                 getFragmentManager().beginTransaction().replace(
                         R.id.content, musicFragment
                 ).commit();
+                drawerLayout.closeDrawers();
                 break;
             case R.id.video:
                 Toast.makeText(this, "video", Toast.LENGTH_SHORT).show();
@@ -113,6 +114,7 @@ public class MainActivity extends AppCompatActivity
                 getFragmentManager().beginTransaction().replace(
                         R.id.content, videofragment
                 ).commit();
+                drawerLayout.closeDrawers();
                 break;
             default:
                 break;

@@ -64,15 +64,21 @@ public class VideoApapter extends BaseAdapter {
         holder.time.setText(videos.get(position).getDuration()/1000 + "s");
 
         Bitmap bitmap = null;
-        if(videos.get(position).getLoadedImage()!=null){
+        if(videos.get(position).getLoadedImage()!= null){
             bitmap = videos.get(position).getLoadedImage().getBitmap();
+            System.out.println("hehe--loaded");
         }
-        if(bitmap==null)
-        holder.imageView.setBackgroundResource(R.mipmap.ic_launcher);
+        if(bitmap == null){
+            holder.imageView.setImageBitmap(null);
+            holder.imageView.setBackgroundResource(R.mipmap.ic_launcher);
+            System.out.println("hehe--ic");
+        }
         else{
             holder.imageView.setBackground(null);
             holder.imageView.setImageBitmap(bitmap);
         }
+
+        System.out.println("repainted");
         return convertView;
     }
 
