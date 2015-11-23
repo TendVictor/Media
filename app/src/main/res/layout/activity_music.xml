@@ -5,11 +5,20 @@
     android:background="@drawable/bg_playback"
     android:gravity="bottom">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_music_title"
+        android:text="!!!!!!!!!!!!!!"
+        android:textSize="30sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="200dp"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
+        android:layout_height="80dp"
+        android:orientation="vertical">
 
     <SeekBar
         android:layout_width="match_parent"
@@ -20,11 +29,25 @@
         android:progressDrawable="@drawable/bg_seekbar_progress"
         android:thumb="@drawable/bg_seekbarthumb"/>
 
-        <TextView
-            android:id="@+id/tv_duration"
-            android:layout_width="40dp"
-            android:layout_height="match_parent"
-            android:text="lalal"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+            <TextView
+                android:layout_alignParentRight="true"
+                android:id="@+id/tv_duration"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:text="lalal" />
+
+            <TextView
+                android:layout_alignParentLeft="true"
+                android:id="@+id/tv_current"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:text="5555555555555555"/>
+
+        </RelativeLayout>
     </LinearLayout>
 
 
@@ -51,7 +74,7 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:id="@+id/bt_musicplay"
-            android:background="@drawable/bg_btn_play"/>
+            android:background="@drawable/bg_btn_pause"/>
 
         <Button
             android:layout_width="0dp"

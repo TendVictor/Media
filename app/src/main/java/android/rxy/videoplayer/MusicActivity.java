@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chen.media.R;
@@ -48,6 +49,8 @@ public class MusicActivity extends Activity implements View.OnClickListener{
     private boolean isOrdered;//顺序播放
     private boolean isShuffled;//随机播放
 
+    private TextView tv_current,tv_duration,tv_musictitle;
+
     private PlayerRecevier myPlayerRecevier;
 
 
@@ -71,9 +74,10 @@ System.out.println("position is :" + position);
         initView();
         initService();
 
+        tv_musictitle.setText(musics.get(position).getTitle());
+
         path = musics.get(position).getPath();
         duration = musics.get(position).getDuaration();
-
 
 
         setAllUi();
@@ -164,6 +168,9 @@ System.out.println("Service Start!!");
         nextBtn = (Button) findViewById(R.id.bt_musicnext);
         shuffleBtn = (Button) findViewById(R.id.btn_shuffle);
         repeatBtn = (Button)findViewById(R.id.btn_repeat);
+        tv_duration = (TextView)findViewById(R.id.tv_duration);
+        tv_current = (TextView) findViewById(R.id.tv_current);
+        tv_musictitle = (TextView) findViewById(R.id.tv_music_title);
 
         musicProvider = new MusicProvider(this);
         musics = (ArrayList<Music>) musicProvider.getList();
@@ -266,17 +273,17 @@ System.out.println("Service Start!!");
         switch (state){
             case isSingalRepeat:
                 repeatBtn.setBackgroundResource(R.drawable.bg_btn_repeatcurrent);
-                repeatIntent.putExtra("repeatState",isSingalRepeat);
+                repeatIntent.putExtra("repeatState", isSingalRepeat);
                 sendBroadcast(repeatIntent);
                 break;
             case isCircleRepeat:
                 repeatBtn.setBackgroundResource(R.drawable.bg_btn_repeatall);
-                repeatIntent.putExtra("repeatState",isCircleRepeat);
+                repeatIntent.putExtra("repeatState", isCircleRepeat);
                 sendBroadcast(repeatIntent);
                 break;
             case isNoneCircleRepeat:
                 repeatBtn.setBackgroundResource(R.drawable.bg_btn_repeatnone);
-                repeatIntent.putExtra("repeatState",isNoneCircleRepeat);
+                repeatIntent.putExtra("repeatState", isNoneCircleRepeat);
                 sendBroadcast(repeatIntent);
                 break;
         }
@@ -305,10 +312,17 @@ System.out.println("Service Start!!");
     }
 
     private void nextMusic() {
+        playBtn.setBackgroundResource(R.drawable.bg_btn_pause);
+        isPause = false;
+        isPlaying = true;
+
+
         if(isShuffled)
             position = getRandomIndex(musics.size()-1);
-        else
-            position++;
+        else{
+            if(repeatState != isSingalRepeat)
+                position++;
+        }
         if(position > musics.size()-1)
             position = 0;
         path = musics.get(position).getPath();
@@ -321,16 +335,21 @@ System.out.println("Service Start!!");
     }
 
     private void previousMusic() {
+        playBtn.setBackgroundResource(R.drawable.bg_btn_pause);
+        isPause = false;
+        isPlaying = true;
         if(isShuffled)
             position = getRandomIndex(musics.size()-1);
-        else
-            position--;
+        else{
+            if(repeatState != isSingalRepeat)
+                position--;
+        }
         if(position < 0)
             position = musics.size()-1;
         path = musics.get(position).getPath();
         Intent intent = new Intent();
         intent.setAction("music_service");
-        intent.putExtra("path",path);
+        intent.putExtra("path", path);
         intent.putExtra("position",position);
         intent.putExtra("MSG",Constant.PREVIOUS_MSG);
         startService(intent);
@@ -342,6 +361,26 @@ System.out.println("Service Start!!");
         return index;
     }
 
+    public String formatTime(long time){
+        String min = time / (1000 * 60) + "";
+        String sec = time % (1000 * 60) + "";
+        if (min.length() < 2) {
+            min = "0" + time / (1000 * 60) + "";
+        } else {
+            min = time / (1000 * 60) + "";
+        }
+        if (sec.length() == 4) {
+            sec = "0" + (time % (1000 * 60)) + "";
+        } else if (sec.length() == 3) {
+            sec = "00" + (time % (1000 * 60)) + "";
+        } else if (sec.length() == 2) {
+            sec = "000" + (time % (1000 * 60)) + "";
+        } else if (sec.length() == 1) {
+            sec = "0000" + (time % (1000 * 60)) + "";
+        }
+        return min + ":" + sec.trim().substring(0, 2);
+    }
+
     public class PlayerRecevier extends BroadcastReceiver{
 
         @Override
@@ -350,12 +389,15 @@ System.out.println("Service Start!!");
             if(action.equals(MUSIC_CURRENT)){
                 currentTime = intent.getIntExtra("currentTime" , -1);
                 musicProgress.setProgress(currentTime);
+                tv_current.setText(formatTime(currentTime));
             }else if(action.equals(MUSIC_DURATION)){
                 duration = intent.getIntExtra("duration", -1);
                 musicProgress.setMax((int) duration);
+                tv_duration.setText(formatTime(duration));
             }else if(action.equals(UPDATE_ACTION)){
                 position = intent.getIntExtra("current", -1);
                 path = musics.get(position).getPath();
+                tv_musictitle.setText(musics.get(position).getTitle());
             }
         }
     }
