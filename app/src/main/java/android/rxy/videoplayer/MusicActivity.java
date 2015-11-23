@@ -80,7 +80,7 @@ System.out.println("position is :" + position);
         tv_musictitle.setText(musics.get(position).getTitle());
 
         path = musics.get(position).getPath();
-        duration = musics.get(position).getDuaration();
+        duration = musics.get(position).getDuration();
 
 
         setAllUi();

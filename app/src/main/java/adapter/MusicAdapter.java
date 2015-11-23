@@ -54,7 +54,7 @@ public class MusicAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.title.setText(musics.get(position).getTitle());
-        holder.time.setText(musics.get(position).getDuaration()/1000 + "s");
+        holder.time.setText(musics.get(position).getDuration()/1000 + "s");
 
         return convertView;
     }

@@ -57,8 +57,7 @@ public class MusicProvider implements AbstructProvider{
                     long size = cursor
                             .getLong(cursor
                                     .getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE));
-                    Music music = new Music(id, title, album, artist, path,
-                            displayName, mimeType, duration, size);
+                    Music music = new Music(id, title, mimeType,path,album,artist,displayName,size,duration);
                     musics.add(music);
                 }
             }

@@ -55,7 +55,7 @@ public class VideoProvider implements AbstructProvider {
                     long size = cursor
                             .getLong(cursor
                                     .getColumnIndexOrThrow(MediaStore.Video.Media.SIZE));
-                    Video video = new Video(id, title, album, artist, displayName, mimeType, path, size, duration);
+                    Video video = new Video(id, title,mimeType, path, album, artist, displayName, size, duration);
                     videos.add(video);
                 }
                 cursor.close();
