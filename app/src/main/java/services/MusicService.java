@@ -12,17 +12,27 @@ import android.os.Message;
 import android.rxy.videoplayer.MusicActivity;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.animation.AnimationUtils;
+
+import com.example.chen.media.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import DataHelper.MusicProvider;
 import bean.Constant;
+import bean.LrcContent;
 import bean.Music;
+import utlis.LyricProcess;
 
 /**
  * Created by chen on 15/11/12.
  */
 public class MusicService extends Service {
+
+    private LyricProcess mLyricProcess;
+    private List<LrcContent> lrcList = new ArrayList<>();
+    private int index = 0;
 
     private MediaPlayer musicPlayer;
     private MusicProvider musicProvider;
@@ -121,6 +131,55 @@ public class MusicService extends Service {
         return index;
     }
 
+    public void initLrc(){
+        mLyricProcess = new LyricProcess();
+        mLyricProcess.readLRC(musics.get(current).getPath());
+        lrcList = mLyricProcess.getLrcList();
+        MusicActivity.lyricView.setmLrcList(lrcList);
+        MusicActivity.lyricView.setAnimation(AnimationUtils.loadAnimation(MusicService.this, R.anim.alpha_z));
+
+        handler.post(mRunnable);
+    }
+
+    Runnable mRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            MusicActivity.lyricView.setIndex(lrcIndex());
+            MusicActivity.lyricView.invalidate();
+            handler.postDelayed(mRunnable, 100);
+        }
+    };
+
+    /**
+     * 根据时间获取歌词显示的索引值
+     * @return
+     */
+    public int lrcIndex() {
+        if(musicPlayer.isPlaying()) {
+            currentTime = musicPlayer.getCurrentPosition();
+            duration = musicPlayer.getDuration();
+        }
+        if(currentTime < duration) {
+            for (int i = 0; i < lrcList.size(); i++) {
+                if (i < lrcList.size() - 1) {
+                    if (currentTime < lrcList.get(i).getLrcTime() && i == 0) {
+                        index = i;
+                    }
+                    if (currentTime > lrcList.get(i).getLrcTime()
+                            && currentTime < lrcList.get(i + 1).getLrcTime()) {
+                        index = i;
+                    }
+                }
+                if (i == lrcList.size() - 1
+                        && currentTime > lrcList.get(i).getLrcTime()) {
+                    index = i;
+                }
+            }
+        }
+        return index;
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -156,6 +215,7 @@ public class MusicService extends Service {
 
     private void play(int currentTime) {
         try {
+            initLrc();
             musicPlayer.reset();
             musicPlayer.setDataSource(path);
             musicPlayer.setOnPreparedListener(new PreparedListener(currentTime));

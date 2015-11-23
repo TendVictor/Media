@@ -20,6 +20,7 @@ import DataHelper.MusicProvider;
 import bean.Constant;
 import bean.Music;
 import services.MusicService;
+import view.LyricView;
 
 /**
  * Created by chen on 15/11/12.
@@ -50,6 +51,8 @@ public class MusicActivity extends Activity implements View.OnClickListener{
     private boolean isShuffled;//随机播放
 
     private TextView tv_current,tv_duration,tv_musictitle;
+
+    public static LyricView lyricView;
 
     private PlayerRecevier myPlayerRecevier;
 
@@ -92,6 +95,7 @@ System.out.println("position is :" + position);
 
         playBtn.performClick();
         isPlaying = true;
+        isPause = false;
         System.out.println("onCreate Done!!!");
     }
 
@@ -171,6 +175,7 @@ System.out.println("Service Start!!");
         tv_duration = (TextView)findViewById(R.id.tv_duration);
         tv_current = (TextView) findViewById(R.id.tv_current);
         tv_musictitle = (TextView) findViewById(R.id.tv_music_title);
+        lyricView  = (LyricView) findViewById(R.id.tv_lyricview);
 
         musicProvider = new MusicProvider(this);
         musics = (ArrayList<Music>) musicProvider.getList();
@@ -298,8 +303,8 @@ System.out.println("Service Start!!");
     private void audioProgressChange(int progress){
         Intent intent = new Intent();
         intent.setAction("music_service");
-        intent.putExtra("path", path);
         intent.putExtra("position", position);
+        intent.putExtra("path", path);
         System.out.println("isPause : " + isPause);
         if(isPause){
             intent.putExtra("MSG",Constant.PAUSE_MSG);
