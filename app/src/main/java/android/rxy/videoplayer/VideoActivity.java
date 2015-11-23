@@ -162,6 +162,16 @@ public class VideoActivity extends AppCompatActivity implements View.OnTouchList
             }
         }
         if(event.getAction() == MotionEvent.ACTION_MOVE){
+//            px2 = event.getX();
+//            py2 = event.getY();
+//            float distance =  py1 - py2;
+//
+//            if(IsSlectedVolume)
+//                VolumneChanged(distance / ScreenHeight);
+//            else
+//                BrightnessChanged(distance / ScreenHeight);
+        }
+        if(event.getAction() == MotionEvent.ACTION_UP){
             px2 = event.getX();
             py2 = event.getY();
             float distance =  py1 - py2;
@@ -170,8 +180,6 @@ public class VideoActivity extends AppCompatActivity implements View.OnTouchList
                 VolumneChanged(distance / ScreenHeight);
             else
                 BrightnessChanged(distance / ScreenHeight);
-        }
-        if(event.getAction() == MotionEvent.ACTION_UP){
         }
         super.onTouchEvent(event);
         return true;
@@ -214,7 +222,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnTouchList
             }
             System.out.println(mVolume +" ^^^^^^^^^");
 
-            int index =(int) (percent * maxVolume) + mVolume;
+            int index =(int) (percent * maxVolume) ;//+ mVolume;
             if(index > maxVolume)
                 index = maxVolume;
             else if(index < 0)
@@ -242,28 +250,4 @@ public class VideoActivity extends AppCompatActivity implements View.OnTouchList
             getWindow().setAttributes(lpa);
             mBrightness = getWindow().getAttributes().screenBrightness;
         }
-//    class MyGestureListener extends GestureDetector.SimpleOnGestureListener{
-//
-//        @Override
-//        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-//            if(e1.getX() <= ScreenMedium){
-//                Volumechanged();
-//            }
-//            else{
-//                Brightchanged();
-//            }
-//            return super.onScroll(e1, e2, distanceX, distanceY);
-//        }
-//
-//
-//
-//        private void Volumechanged(boolean flag) {
-//            if(flag)
-//
-//        }
-//
-//        private void Brightchanged() {
-//
-//        }
-//    }
 }
